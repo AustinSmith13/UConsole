@@ -4,7 +4,7 @@ using System.Collections;
 using System;
 
 
-namespace Console
+namespace UConsole
 {
     /// <summary>
     /// Handles logging events.

@@ -1,15 +1,9 @@
-﻿using Console.Unity;
-using UnityEngine;
-
-namespace Console.Commands
+﻿namespace UConsole.Commands
 {
-    public static class ClearCommand
+    [UConsole.Command("CLEAR", "Clears console screen.")]
+    public class ClearCommand : ICommand
     {
-        public static readonly string name = "CLEAR";
-        public static readonly string description = "Clears console screen.";
-        public static readonly string usage = "[none]";
-
-        public static string Execute(params string[] args)
+        public string Execute(params string[] args)
         {
             Console.Clear();
             return "";

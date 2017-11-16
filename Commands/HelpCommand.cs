@@ -1,16 +1,13 @@
 ﻿using System.Text;
 
-namespace Console.Commands
+namespace UConsole.Commands
 {
-    public static class HelpCommand
+    [UConsole.Command("HELP", "Display the list of available commands or details about a specific command.", "[command]")]
+    public class HelpCommand : ICommand
     {
-        public static readonly string name = "HELP";
-        public static readonly string description = "Display the list of available commands or details about a specific command.";
-        public static readonly string usage = "[command]";
+        private StringBuilder commandList = new StringBuilder();
 
-        private static StringBuilder commandList = new StringBuilder();
-
-        public static string Execute(params string[] args)
+        public string Execute(params string[] args)
         {
             if (args.Length == 0)
             {
@@ -22,7 +19,7 @@ namespace Console.Commands
             }
         }
 
-        private static string DisplayAvailableCommands()
+        private string DisplayAvailableCommands()
         {
             commandList.Length = 0; // clear the command list before rebuilding it
             commandList.Append("<b>Available Commands</b>\n");
@@ -36,7 +33,7 @@ namespace Console.Commands
             return commandList.ToString();
         }
 
-        private static string DisplayCommandDetails(string commandName)
+        private string DisplayCommandDetails(string commandName)
         {
             string formatting =
             @"<b>{0} Command</b>

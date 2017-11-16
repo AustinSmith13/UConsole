@@ -1,9 +1,9 @@
 ﻿using UnityEngine;
 using System.Collections;
-using Console.Commands;
+using UConsole.Commands;
 using System.Collections.Generic;
 
-namespace Console
+namespace UConsole
 {
     /// <summary>
     /// Example Unity Console GUI
@@ -11,8 +11,17 @@ namespace Console
     public class ConsoleGui : MonoBehaviour
     {
 
-        private int height = Screen.height/2;
+        public enum ConsoleSize
+        {
+            Half,
+            Full
+        }
 
+        public Color consoleColor;
+        public ConsoleSize consoleSize;
+
+        private ConsoleHistory consoleHistory;
+        private int height = Screen.height/2;
         private Texture2D box;
         private Texture2D suggestionBox;
         private int offset = -Screen.height / 2;
@@ -32,25 +41,14 @@ namespace Console
             Console.onLogged += OnLogged;
             commands = ConsoleCommandDatabase.commands;
 
-            if (!ConsoleCommandDatabase.CommandExists(HelpCommand.name))
-                ConsoleCommandDatabase.RegisterCommand(HelpCommand.name,
-                    HelpCommand.description, HelpCommand.usage, HelpCommand.Execute);
-            if (!ConsoleCommandDatabase.CommandExists(MapCommand.name))
-                ConsoleCommandDatabase.RegisterCommand(MapCommand.name,
-                    MapCommand.description, MapCommand.usage, MapCommand.Execute);
-            if (!ConsoleCommandDatabase.CommandExists(ExitCommand.name))
-                ConsoleCommandDatabase.RegisterCommand(ExitCommand.name,
-                    ExitCommand.description, ExitCommand.usage, ExitCommand.Execute);
-            if (!ConsoleCommandDatabase.CommandExists(ClearCommand.name))
-                ConsoleCommandDatabase.RegisterCommand(ClearCommand.name,
-                    ClearCommand.description, ClearCommand.usage, ClearCommand.Execute);
+            ConsoleCommandDatabase.FindAndRegisterCommands(System.Reflection.Assembly.GetCallingAssembly());
         }
 
         void Update()
         {
             if(Input.GetKeyDown(KeyCode.BackQuote))
             {
-                height = Screen.height / 2;
+                height = GetHeight();
                 showConsole = !showConsole;
 
                 if(showConsole == true)
@@ -102,6 +100,14 @@ namespace Console
             GUI.skin.box.normal.background = defaultGUIBackgroundTexture;
         }
 
+        int GetHeight()
+        {
+            if (consoleSize == ConsoleSize.Half)
+                return Screen.height / 2;
+            else
+                return Screen.height - 50;
+        }
+
         void GenerateTexture()
         {
             box = new Texture2D(8, 8);
@@ -114,7 +120,7 @@ namespace Console
                     if (y == 0)
                         box.SetPixel(x, y, Color.grey);
                     else
-                        box.SetPixel(x, y, new Color(0,0,0,0.9f));
+                        box.SetPixel(x, y, consoleColor);
 
                     suggestionBox.SetPixel(x, y, new Color(0.1f, 0.1f, 0.1f));
                 }
@@ -142,7 +148,9 @@ namespace Console
             Console.Log(message);
             string msg = ConsoleCommandDatabase.ExecuteCommand(command, args);
             if (msg != null && msg.Length != 0)
+            {
                 Console.Log(msg);
+            }
         }
 
         public string Sanitize(string message)
@@ -195,8 +203,6 @@ namespace Console
         {
             while(offset > -height-10)
             {
-                //offset -= (int) Mathf.Log10(width + offset) * 20;
-                //offset -= (int) Mathf.InverseLerp(offset, width, offset);
                 offset -= height/20;
                 yield return null;
             }

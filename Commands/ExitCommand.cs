@@ -1,15 +1,11 @@
-﻿using Console.Unity;
-using UnityEngine;
+﻿using UnityEngine;
 
-namespace Console.Commands
+namespace UConsole.Commands
 {
-    public static class ExitCommand
+    [UConsole.Command("QUIT", "Quits the application.")]
+    public class ExitCommand : ICommand
     {
-        public static readonly string name = "QUIT";
-        public static readonly string description = "Quits the application.";
-        public static readonly string usage = "[none]";
-
-        public static string Execute(params string[] args)
+        public string Execute(params string[] args)
         {
             if (args.Length == 0)
                 Application.Quit();

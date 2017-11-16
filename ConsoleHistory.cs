@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 
-namespace Console
+namespace UConsole
 {
     /// <summary>
     /// Keeps track of input history and also allows you

@@ -1,7 +1,9 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
+using System;
+using System.Reflection;
 
-namespace Console
+namespace UConsole
 {
     /// <summary>
     /// Responsible for storing and executing console
@@ -55,6 +57,21 @@ namespace Console
                 return database[command.ToLower()].callback(args);
             }
             return "<color=red><b>Unrecognized command</b></color>";
+        }
+
+        public static void FindAndRegisterCommands(Assembly assembly)
+        {
+            foreach(Type type in assembly.GetTypes())
+            {
+                object[] attributes = type.GetCustomAttributes(typeof(Command), true);
+                if (attributes.Length > 0)
+                {
+                    ICommand command = (ICommand)Activator.CreateInstance(type);
+                    RegisterCommand(((Command)attributes[0]).CommandName, 
+                        ((Command)attributes[0]).Description, 
+                        ((Command)attributes[0]).Usage, command.Execute);
+                }
+            }
         }
     }
 }

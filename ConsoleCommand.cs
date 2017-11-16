@@ -1,5 +1,5 @@
 ﻿
-namespace Console
+namespace UConsole
 {
     public delegate string cmdCallBack(params string[] args);
 
